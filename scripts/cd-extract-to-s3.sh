@@ -48,6 +48,6 @@ CHECK_VERSION=$(node -p "require('./package.json').version")
 
 echo "=== Running Package ==="
 
-PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket h4-tmp --s3-prefix extract/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
+PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket my-micro-dev-s3src-qu6nac7w0ump --s3-prefix extract/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
 
 eval "${PACKAGE_COMMAND}"
