@@ -12,10 +12,18 @@ SERVICES_DIR='services'
 
 echo ${BUILD_TAG}
 
-# buildSplit=(${BUILD_TAG//\// })
-# SERVICE=${buildSplit[0]}
-# VERSION=${buildSplit[1]}
-#
+# The tag should be in the format ${PROJECT}/${SERVICE}/${VERSION}(/${FUNCTION})?
+buildSplit=(${BUILD_TAG//\// })
+PROJECT=${buildSplit[0]}
+SERVICE=${buildSplit[1]}
+VERSION=${buildSplit[2]}
+FUNCTION=${buildSplit[3]} #Optional
+
+echo "project: ${PROJECT}"
+echo "service: ${SERVICE}"
+echo "version: ${VERSION}"
+echo "function: ${FUNCTION}"
+
 # cd "${SERVICES_DIR}/${SERVICE}"
 #
 # CHECK_SERVICE=$(node -p "require('./package.json').name")
