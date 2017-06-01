@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >-
+  Hello World Service
+Parameters:
+  EnvironmentParameter:
+    Type: String
+    Default: test
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Description: Enter dev, test or prod. Default is test.
+Resources:
+  HelloWorld:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-HelloWorld'
+      Handler: index.hello
+      Runtime: nodejs6.10
+      CodeUri: .
+      Description: >-
+        Hello World Function
+      MemorySize: 128
+      Timeout: 5
+      Role: 'arn:aws:iam::798269391015:role/lambda_basic_execution'
