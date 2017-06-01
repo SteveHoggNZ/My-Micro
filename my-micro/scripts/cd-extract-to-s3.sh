@@ -2,15 +2,16 @@
 
 set -e
 
-PROJECT=$(grep ^name: project/config.yml | cut -d ' ' -f 2)
+# To Do: make the environment part of the tag too?
+ENVIRONMENT="dev"
 
 S3_QUEUE_DIR="${PWD}/queue"
-
 mkdir -p ${S3_QUEUE_DIR}
 
+PROJECT_DIR='project'
 SERVICES_DIR='services'
 
-echo ${BUILD_TAG}
+echo "Build Tag: ${BUILD_TAG}"
 
 # The tag should be in the format ${PROJECT}/${SERVICE}/${VERSION}(/${FUNCTION})?
 buildSplit=(${BUILD_TAG//\// })
@@ -19,16 +20,15 @@ SERVICE=${buildSplit[1]}
 VERSION=${buildSplit[2]}
 FUNCTION=${buildSplit[3]} #Optional
 
-echo "project: ${PROJECT}"
-echo "service: ${SERVICE}"
-echo "version: ${VERSION}"
-echo "function: ${FUNCTION}"
+SERVICE_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
+cp .eslintrc "${SERVICE_DIR}"
+cp -pR "${PROJECT}/${PROJECT_DIR}" "${SERVICE_DIR}"
 
-# cd "${SERVICES_DIR}/${SERVICE}"
-#
-# CHECK_SERVICE=$(node -p "require('./package.json').name")
-# CHECK_VERSION=$(node -p "require('./package.json').version")
-#
+cd "${SERVICE_DIR}"
+
+CHECK_SERVICE=$(node -p "require('./package.json').name")
+CHECK_VERSION=$(node -p "require('./package.json').version")
+
 # if [[ "${SERVICE}" != "${CHECK_SERVICE}" ]]; then
 #   echo "Package service ${CHECK_SERVICE} does not match tag service ${SERVICE}"
 #   exit 2
@@ -45,3 +45,9 @@ echo "function: ${FUNCTION}"
 # echo "=== Running Extract ==="
 #
 # eval "${EXTRACT_COMMANDS}"
+
+echo "=== Running Package ==="
+
+PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket h4-tmp --s3-prefix extract/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
+
+eval "${PACKAGE_COMMAND}"
