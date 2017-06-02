@@ -46,7 +46,6 @@ fi
 
 SERVICE_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
 cp .eslintrc "${SERVICE_DIR}"
-cp -pR "${PROJECT}/${PROJECT_DIR}" "${SERVICE_DIR}"
 
 cd "${SERVICE_DIR}"
 
