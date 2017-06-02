@@ -28,5 +28,6 @@ phases:
       - echo ${BUILD_ACTION} for ${PROJECT} ${SERVICE} ${VERSION} ${ENVIRONMENT} completed on `date`
 artifacts:
   files:
+    - './buildspec.yml'
     - './sam-out.yml'
   discard-paths: no
