@@ -1,7 +1,7 @@
 'use strict';
 
 exports.hello = (event, context, callback) => {
-  const msg = 'Hello World.'
+  const msg = 'Hi There World!'
 
   console.log(msg)
   callback(null, msg)
