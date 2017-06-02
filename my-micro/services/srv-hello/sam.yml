@@ -57,5 +57,5 @@ Resources:
         ProjectNameParameter: !Ref ProjectNameParameter
         ServiceNameParameter: !Ref ServiceNameParameter
         EnvironmentParameter: !Ref EnvironmentParameter
-      TemplateURL: ../../../common/pipelines/basic.cf.yml
+      TemplateURL: ./common/pipelines/basic.cf.yml
       TimeoutInMinutes: 2
