@@ -33,7 +33,8 @@ ENVIRONMENT='dev'
 aws cloudformation create-stack \
   --stack-name ${PROJECT}-${ENVIRONMENT} \
   --template-body file://my-cd/services/cd-infrastructure/cf.yml \
-  --parameters ParameterKey=ProjectNameParameter,ParameterValue=${PROJECT}-${ENVIRONMENT} \
+  --parameters ParameterKey=ProjectNameParameter,ParameterValue=${PROJECT} \
+               ParameterKey=EnvironmentParameter,ParameterValue=${ENVIRONMENT} \
                ParameterKey=SvcUrlParameter,ParameterValue=https://github.com/SteveHoggNZ/my-micro.git \
   --capabilities CAPABILITY_NAMED_IAM \
   --tags Key=project,Value=${PROJECT} Key=environment,Value=${ENVIRONMENT}
@@ -48,7 +49,8 @@ ENVIRONMENT='dev'
 aws cloudformation deploy \
   --stack-name ${PROJECT}-${ENVIRONMENT} \
   --template-file my-cd/services/cd-infrastructure/cf.yml \
-  --parameter-overrides ProjectNameParameter=${PROJECT}-${ENVIRONMENT} \
+  --parameter-overrides ProjectNameParameter=${PROJECT} \
+                        EnvironmentParameter=${ENVIRONMENT} \
                         SvcUrlParameter=https://github.com/SteveHoggNZ/my-micro.git \
   --capabilities CAPABILITY_NAMED_IAM
 ```
@@ -80,3 +82,18 @@ aws cloudformation deploy \
   --parameter-overrides ProjectNameParameter=${PROJECT} EnvironmentParameter=${ENVIRONMENT} \
   --capabilities CAPABILITY_IAM
 ```
+
+
+# Useful Information
+
+## Fn::GetParam
+
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-parameter-override-functions.html
+
+You can get values from JSON files stored in a CodePipeline artifact using Fn::GetParam
+
+## Pipelines
+
+Creating a pipeline in the console then describing it is the easiest option to see what needs to be defined in the CloudFormation YAML template i.e.
+
+`aws codepipeline get-pipeline --name <name>`
