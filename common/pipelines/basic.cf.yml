@@ -56,7 +56,7 @@ Resources:
                   Fn::ImportValue:
                     !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-S3Src"
                 S3ObjectKey:
-                  !Sub "build/queue/${ServiceNameParameter}.zip"
+                  !Sub "source/queue/${ProjectNameParameter}-${ServiceNameParameter}.zip"
               OutputArtifacts:
                 - Name: ServiceSource
         - Name: Build
@@ -74,4 +74,20 @@ Resources:
               Configuration:
                 ProjectName:
                   !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-build"
+              RunOrder: '1'
+        - Name: Deploy
+          Actions:
+            - Name: Deploy
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              InputArtifacts:
+                - Name: ServiceBuild
+              OutputArtifacts:
+                - Name: ServiceDeploy
+              Configuration:
+                ProjectName:
+                  !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-deploy"
               RunOrder: '1'
