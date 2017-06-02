@@ -3,6 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - pip install --user --upgrade awscli
       # install dev dependencies so they don't get packaged
       - npm install --only=dev
       - mv node_modules node_modules_dev
