@@ -6,6 +6,7 @@ my-micro contains my experiment with AWS Lambda, Micro Services and Continuous D
 
 * Pass role by reference: Role: 'arn:aws:iam::798269391015:role/lambda_basic_execution'
 * Figure out how SAM works with API Gateway stages e.g. prod etc
+* Fix cli bug with nested stack uri: https://github.com/aws/aws-cli/pull/2360
 
 # Setup
 
@@ -62,9 +63,9 @@ VERSION='1.0.0'
 
 aws cloudformation package \
  --template-file sam.yml \
- --output-template-file output.yaml \
+ --output-template-file sam-out.yaml \
  --s3-bucket h4-tmp \
- --s3-prefix extract/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}
+ --s3-prefix extract/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}
 ```
 
 ```
@@ -74,7 +75,7 @@ SERVICE='cd-vcs-hook'
 VERSION='1.0.0'
 
 aws cloudformation deploy \
-  --template-file /Users/steve/Work/H4/Experiments/my-micro/services/cd-vcs-hook/output.yaml \
+  --template-file /Users/steve/Work/H4/Experiments/my-micro/services/cd-vcs-hook/sam-out.yaml \
   --stack-name ${PROJECT}-${ENVIRONMENT}-${SERVICE} \
   --parameter-overrides ProjectNameParameter=${PROJECT} EnvironmentParameter=${ENVIRONMENT} \
   --capabilities CAPABILITY_IAM

@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  Test S3 nested stack
+Parameters:
+  TestParameter:
+    Type: String
+Resources:
+  MyS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      Tags:
+        - TestParameter: !Ref TestParameter

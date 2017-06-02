@@ -24,3 +24,10 @@ Resources:
       MemorySize: 128
       Timeout: 5
       Role: 'arn:aws:iam::798269391015:role/lambda_basic_execution'
+  QuickTest:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        TestParameter: "does this work?"
+      TemplateURL: ./test.cf.yml
+      TimeoutInMinutes: 2
