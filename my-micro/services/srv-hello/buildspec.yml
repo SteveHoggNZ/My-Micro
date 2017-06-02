@@ -15,6 +15,7 @@ phases:
       - echo Nothing to do in the pre_build phase...
   build:
     commands:
+      - ls -al
       - SVC=$(node -p "require('./package.json').name")
       - echo ${BUILD_ACTION} for ${SVC} started on `date`
       - npm run ${BUILD_ACTION}
@@ -26,5 +27,5 @@ phases:
       - echo ${BUILD_ACTION} for ${SVC} completed on `date`
 artifacts:
   files:
-    - 'sam-out.yml'
+    - './sam-out.yml'
   discard-paths: no
