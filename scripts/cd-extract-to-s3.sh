@@ -10,6 +10,8 @@ SERVICES_DIR='services'
 
 echo "Processing Build Tag: ${BUILD_TAG}"
 
+aws --version
+
 # The tag should be in the format ${PROJECT}/${SERVICE}/${VERSION}(/${ENVIRONMENT})?
 buildSplit=(${BUILD_TAG//\// })
 PROJECT=${buildSplit[0]}
@@ -69,6 +71,6 @@ eval "${EXTRACT_COMMANDS}"
 
 # echo "=== Running Package ==="
 #
-# PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket my-micro-dev-s3src-qu6nac7w0ump --s3-prefix package/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
+# PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket my-micro-dev-s3src-qu6nac7w0ump --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
 #
 # eval "${PACKAGE_COMMAND}"

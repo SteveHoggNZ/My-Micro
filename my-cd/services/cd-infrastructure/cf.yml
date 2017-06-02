@@ -24,7 +24,7 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub "${AWS::StackName}-extract"
-      ServiceRole: !Ref "CodeBuildRole"
+      ServiceRole: !Ref CodeBuildRole
       Environment:
         ComputeType: "BUILD_GENERAL1_SMALL"
         Image: "aws/codebuild/nodejs:7.0.0"
@@ -33,6 +33,9 @@ Resources:
           -
             Name: BUILD_ACTION
             Value: extract
+          -
+            Name: S3_BUCKET
+            Value: !Ref S3Src
       Source:
         Type: "GITHUB"
         Location: !Ref "SvcUrlParameter"
