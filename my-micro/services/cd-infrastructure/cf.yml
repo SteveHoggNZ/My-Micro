@@ -40,7 +40,7 @@ Resources:
       Artifacts:
         Type: "S3"
         Location: !Ref S3Src
-        Name: "build"
+        Name: "source"
       TimeoutInMinutes: 5
   # ==== CodePipeline Role for use by each services' CodePipeline
   CodePipelineRole:

@@ -39,15 +39,14 @@ CHECK_VERSION=$(node -p "require('./package.json').version")
 #   exit 2
 # fi
 #
-# EXTRACT_COMMANDS='cp ../../.eslintrc . && cp -R ../../project . && zip -r ${S3_QUEUE_DIR}/${PROJECT}-${SERVICE}.zip .'
-# # EXTRACT_COMMANDS='cp ../../.eslintrc . && cp -R ../../project . && mkdir -p ${S3_QUEUE_DIR}/${SERVICE}/ && zip -r ${S3_QUEUE_DIR}/${SERVICE}.zip .'
+EXTRACT_COMMANDS='zip -r ${S3_QUEUE_DIR}/${PROJECT}-${SERVICE}.zip .'
+
+echo "=== Running Extract ==="
+
+eval "${EXTRACT_COMMANDS}"
+
+# echo "=== Running Package ==="
 #
-# echo "=== Running Extract ==="
+# PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket my-micro-dev-s3src-qu6nac7w0ump --s3-prefix package/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
 #
-# eval "${EXTRACT_COMMANDS}"
-
-echo "=== Running Package ==="
-
-PACKAGE_COMMAND="aws cloudformation package --template-file sam.yml --output-template-file output.yml --s3-bucket my-micro-dev-s3src-qu6nac7w0ump --s3-prefix extract/${PROJECT}/${ENVIRONMENT}/${SERVICE}/${VERSION}"
-
-eval "${PACKAGE_COMMAND}"
+# eval "${PACKAGE_COMMAND}"
