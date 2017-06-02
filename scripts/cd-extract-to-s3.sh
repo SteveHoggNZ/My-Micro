@@ -2,23 +2,45 @@
 
 set -e
 
-# To Do: make the environment part of the tag too?
-ENVIRONMENT="dev"
-
 S3_QUEUE_DIR="${PWD}/queue"
 mkdir -p ${S3_QUEUE_DIR}
 
 PROJECT_DIR='project'
 SERVICES_DIR='services'
 
-echo "Build Tag: ${BUILD_TAG}"
+echo "Processing Build Tag: ${BUILD_TAG}"
 
-# The tag should be in the format ${PROJECT}/${SERVICE}/${VERSION}(/${FUNCTION})?
+# The tag should be in the format ${PROJECT}/${SERVICE}/${VERSION}(/${ENVIRONMENT})?
 buildSplit=(${BUILD_TAG//\// })
 PROJECT=${buildSplit[0]}
 SERVICE=${buildSplit[1]}
 VERSION=${buildSplit[2]}
-FUNCTION=${buildSplit[3]} #Optional
+ENVIRONMENT=${buildSplit[3]}
+
+if [[ -z $PROJECT ]]; then
+  echo "Error: PROJECT not set in tag"
+  exit 2
+fi
+
+if [[ -z $SERVICE ]]; then
+  echo "Error: SERVICE not set in tag"
+  exit 2
+fi
+
+if [[ -z $VERSION ]]; then
+  echo "Error: VERSION not set in tag"
+  exit 2
+fi
+
+if [[ -z $ENVIRONMENT ]]; then
+  echo "Error: ENVIRONMENT not set in tag"
+  exit 2
+fi
+
+if [[ $ENVIRONMENT != 'dev' ]] && [[ $ENVIRONMENT != 'prod' ]]; then
+  echo "Error: ENVIRONMENT value ${ENVIRONMENT} must be either dev or prod"
+  exit 2
+fi
 
 SERVICE_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
 cp .eslintrc "${SERVICE_DIR}"
