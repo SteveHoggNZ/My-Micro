@@ -15,16 +15,17 @@ phases:
       - echo Nothing to do in the pre_build phase...
   build:
     commands:
-      - ls -al
-      - SVC=$(node -p "require('./package.json').name")
-      - echo ${BUILD_ACTION} for ${SVC} started on `date`
+      - export PROJECT=$(node -p "require('./package.json').project")
+      - export SERVICE=$(node -p "require('./package.json').name")
+      - export VERSION=$(node -p "require('./package.json').version")
+      - echo ${BUILD_ACTION} for ${PROJECT} ${SERVICE} ${VERSION} ${ENVIRONMENT} started on `date`
       - npm run ${BUILD_ACTION}
   post_build:
     commands:
       # node_modules are only required during build phase
       - rm -fr node_modules
       - rm -fr node_modules_dev
-      - echo ${BUILD_ACTION} for ${SVC} completed on `date`
+      - echo ${BUILD_ACTION} for ${PROJECT} ${SERVICE} ${VERSION} ${ENVIRONMENT} completed on `date`
 artifacts:
   files:
     - './sam-out.yml'

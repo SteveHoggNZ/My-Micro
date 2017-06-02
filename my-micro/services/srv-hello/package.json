@@ -1,4 +1,5 @@
 {
+  "project": "my-micro",
   "name": "srv-hello",
   "version": "1.0.0",
   "description": "",
@@ -18,11 +19,6 @@
       "command": "eslint \"*.js\""
     },
     "build": {
-      "env": {
-        "PROJECT": "my-micro",
-        "SERVICE": "srv-hello",
-        "VERSION": "1.0.222"
-      },
       "command": "aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
     },
     "deploy": {
