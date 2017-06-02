@@ -3,6 +3,28 @@ Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
   Hello World Service
 Parameters:
+  CodeDeliveryNameParameter:
+    Type: String
+    Default: my-cd
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the Continuous Delivery resources
+  ProjectNameParameter:
+    Type: String
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the project
+  ServiceNameParameter:
+    Type: String
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the service
   EnvironmentParameter:
     Type: String
     Default: test
@@ -10,7 +32,7 @@ Parameters:
       - dev
       - test
       - prod
-    Description: Enter dev, test or prod. Default is test.
+    Description: Enter dev, test or prod. Default is test
 Resources:
   HelloWorld:
     Type: 'AWS::Serverless::Function'
@@ -23,11 +45,17 @@ Resources:
         Hello World Function
       MemorySize: 128
       Timeout: 5
-      Role: 'arn:aws:iam::798269391015:role/lambda_basic_execution'
-  QuickTest:
+      Role:
+        Fn::ImportValue:
+          # TO DO: create role for each project?
+          !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
+  Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
       Parameters:
-        TestParameter: "does this work?"
-      TemplateURL: ./test.cf.yml
+        CodeDeliveryNameParameter: !Ref CodeDeliveryNameParameter
+        ProjectNameParameter: !Ref ProjectNameParameter
+        ServiceNameParameter: !Ref ServiceNameParameter
+        EnvironmentParameter: !Ref EnvironmentParameter
+      TemplateURL: ../../../common/pipelines/basic.cf.yml
       TimeoutInMinutes: 2

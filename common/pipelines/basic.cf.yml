@@ -1,0 +1,77 @@
+Parameters:
+  CodeDeliveryNameParameter:
+    Type: String
+    Default: my-cd
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the Continuous Delivery resources
+  ProjectNameParameter:
+    Type: String
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the project
+  ServiceNameParameter:
+    Type: String
+    AllowedPattern: '^[a-z][a-z0-9-]*$'
+    ConstraintDescription: 'Must be only include lowercase letters and - and must start with a letter'
+    MinLength: 4
+    MaxLength: 20
+    Description: The name for the service
+  EnvironmentParameter:
+    Type: String
+    Default: test
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Description: Enter dev, test or prod. Default is test.
+Resources:
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
+      ArtifactStore:
+        Type: S3
+        Location:
+          Fn::ImportValue:
+            !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-S3Src"
+      RoleArn:
+        Fn::ImportValue:
+          !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-CodePipelineRoleArn"
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              Configuration:
+                S3Bucket:
+                  Fn::ImportValue:
+                    !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-S3Src"
+                S3ObjectKey:
+                  !Sub "build/queue/${ServiceNameParameter}.zip"
+              OutputArtifacts:
+                - Name: ServiceSource
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              InputArtifacts:
+                - Name: ServiceSource
+              OutputArtifacts:
+                - Name: ServiceBuild
+              Configuration:
+                ProjectName:
+                  !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-build"
+              RunOrder: '1'

@@ -44,10 +44,11 @@ if [[ $ENVIRONMENT != 'dev' ]] && [[ $ENVIRONMENT != 'prod' ]]; then
   exit 2
 fi
 
-SERVICE_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
-cp .eslintrc "${SERVICE_DIR}"
+SVC_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
+cp .eslintrc "${SVC_DIR}"
+cp -R common "${SVC_DIR}"
 
-cd "${SERVICE_DIR}"
+cd "${SVC_DIR}"
 
 CHECK_SERVICE=$(node -p "require('./package.json').name")
 CHECK_VERSION=$(node -p "require('./package.json').version")
