@@ -1,4 +1,5 @@
 {
+  "project": "my-cd",
   "name": "svc-lambda-release",
   "version": "1.0.0",
   "description": "",
