@@ -27,7 +27,7 @@
       "command": "aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
     },
     "deploy": {
-      "command": "aws cloudformation deploy --template-file sam-out.yml --stack-name ${PROJECT}-${SERVICE}-${ENVIRONMENT} --parameter-overrides ProjectNameParameter=${PROJECT} ServiceNameParameter=${SERVICE} EnvironmentParameter=${ENVIRONMENT}"
+      "command": "aws cloudformation deploy --template-file sam-out.yml --stack-name ${PROJECT}-${SERVICE}-${ENVIRONMENT} --parameter-overrides ProjectNameParameter=${PROJECT} ServiceNameParameter=${SERVICE} EnvironmentParameter=${ENVIRONMENT} --capabilities CAPABILITY_IAM"
     }
   },
   "keywords": [],
@@ -42,7 +42,6 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.4.2",
     "proxyquire": "^1.8.0",
-    "serverless": "^1.14.0",
     "sinon": "^2.3.2",
     "sinon-chai": "^2.10.0"
   },

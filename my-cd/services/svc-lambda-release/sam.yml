@@ -40,7 +40,7 @@ Resources:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
       Handler: src/api/handler.prerelease
       Runtime: nodejs6.10
-      Role: !Ref LambdaRole
+      Role: !GetAtt LambdaRole.Arn
       CodeUri: .
       Description: >-
         Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
@@ -52,40 +52,35 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          -
-            Effect: Allow
+          - Effect: Allow
             Principal:
               Service:
                 - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
-          -
-            # Allow users in the same account to assume the role for debugging
-            Effect: Allow
-            Principal:
-              AWS:
-                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Action:
-              - sts:AssumeRole
       Path: /
       Policies:
-        - Effect: "Allow"
-          Action:
-            - codepipeline:PutJobSuccessResult
-            - codepipeline:putJobFailureResult
-          Resource:
-            - "*"
-        # To Do, remove ListFunctions permission
-        - Effect: "Allow"
-          Action:
-            - lambda:ListFunctions
-          Resource:
-            - "*"
-        - Effect: Allow
-          Action:
-            - cloudformation:ListStackResources
-          Resource:
-            - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
+        - PolicyName: CodeBuildPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action:
+                - codepipeline:PutJobSuccessResult
+                - codepipeline:putJobFailureResult
+              Resource:
+                - "*"
+            # To Do, remove ListFunctions permission
+            - Effect: "Allow"
+              Action:
+                - lambda:ListFunctions
+              Resource:
+                - "*"
+            - Effect: Allow
+              Action:
+                - cloudformation:ListStackResources
+              Resource:
+                - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
   Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
