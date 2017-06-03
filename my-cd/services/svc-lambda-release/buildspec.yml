@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - pip install --user --upgrade awscli
+      # install dev dependencies so they don't get packaged
+      - npm install --only=dev
+      - mv node_modules node_modules_dev
+      - export NODE_PATH=$NODE_PATH:$PWD/node_modules_dev
+      - export PATH=$PATH:$PWD/node_modules_dev/.bin
+      # install production dependencies
+      - npm install --only=production
+  pre_build:
+    commands:
+      - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+      - export PROJECT=$(node -p "require('./package.json').project")
+      - export SERVICE=$(node -p "require('./package.json').name")
+      - export VERSION=$(node -p "require('./package.json').version")
+      - echo ${BUILD_ACTION} for ${PROJECT} ${SERVICE} ${VERSION} ${ENVIRONMENT} started on `date`
+      - npm run ${BUILD_ACTION}
+  post_build:
+    commands:
+      # node_modules are only required during build phase
+      - rm -fr node_modules
+      - rm -fr node_modules_dev
+      - echo ${BUILD_ACTION} for ${PROJECT} ${SERVICE} ${VERSION} ${ENVIRONMENT} completed on `date`
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
