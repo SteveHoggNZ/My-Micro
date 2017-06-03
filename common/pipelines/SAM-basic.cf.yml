@@ -98,13 +98,13 @@ Resources:
                 ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
                 TemplatePath: "ServiceBuild::sam-out.yml"
               RunOrder: '1'
-            - Name: Approve
-              ActionTypeId:
-                Category: Approval
-                Owner: AWS
-                Provider: Manual
-                Version: '1'
-              RunOrder: '2'
+            # - Name: Approve
+            #   ActionTypeId:
+            #     Category: Approval
+            #     Owner: AWS
+            #     Provider: Manual
+            #     Version: '1'
+            #   RunOrder: '2'
             - Name: DeployChange
               ActionTypeId:
                 Category: Deploy
