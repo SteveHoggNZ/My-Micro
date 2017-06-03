@@ -38,7 +38,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
-      Handler: src/index.pre_release
+      Handler: src/api/handler.prerelease
       Runtime: nodejs6.10
       # 01/06/2017 - Polices do not currently get added to the default function
       # role with SAM, so a role needs to be used instead i.e. this doesn't work

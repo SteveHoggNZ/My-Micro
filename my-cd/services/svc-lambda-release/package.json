@@ -8,6 +8,8 @@
     "check:env": "better-npm-run check:env",
     "lint": "better-npm-run lint",
     "lint:fix": "better-npm-run lint --fix",
+    "test": "better-npm-run test",
+    "test:watch": "better-npm-run test --watch",
     "build": "better-npm-run check:env && better-npm-run build",
     "deploy": "better-npm-run check:env && better-npm-run deploy"
   },
@@ -17,6 +19,9 @@
     },
     "lint": {
       "command": "eslint \"*.js\""
+    },
+    "test": {
+      "command": "node_modules/mocha/bin/mocha \"./src/**/*.test.js\""
     },
     "build": {
       "command": "aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
@@ -28,13 +33,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "aws-sdk": "^2.62.0"
-  },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "better-npm-run": "0.0.15",
+    "chai": "^4.0.0",
     "eslint": "^3.19.0",
-    "eslint-plugin-promise": "^3.5.0"
+    "eslint-plugin-promise": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
+    "proxyquire": "^1.8.0",
+    "serverless": "^1.14.0",
+    "sinon": "^2.3.2",
+    "sinon-chai": "^2.10.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.58.0"
   }
 }
