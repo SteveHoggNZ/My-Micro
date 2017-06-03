@@ -46,8 +46,9 @@ module.exports.putJobFailure = ({ jobId, invokeid }) => {
 }
 
 module.exports.listStackResources = () => {
+  // TO DO: get the correct stack
   const params = {
-    StackName: 'my-micro-cd-release-prod'
+    StackName: 'my-cd-svc-lambda-release-dev'
   }
 
   return new Promise(function(resolve, reject) {
