@@ -34,7 +34,7 @@ Parameters:
       - prod
     Description: Enter dev, test or prod. Default is test
 Resources:
-  Hook:
+  PreRelease:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
