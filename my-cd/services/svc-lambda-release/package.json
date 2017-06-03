@@ -1,0 +1,39 @@
+{
+  "name": "svc-lambda-release",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "check:env": "better-npm-run check:env",
+    "lint": "better-npm-run lint",
+    "lint:fix": "better-npm-run lint --fix",
+    "build": "better-npm-run check:env && better-npm-run build",
+    "deploy": "better-npm-run check:env && better-npm-run deploy"
+  },
+  "betterScripts": {
+    "check:env": {
+      "command": "test ! -z $S3_BUCKET && test ! -z $PROJECT && test ! -z $SERVICE && test ! -z $VERSION && test ! -z $ENVIRONMENT"
+    },
+    "lint": {
+      "command": "eslint \"*.js\""
+    },
+    "build": {
+      "command": "aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
+    },
+    "deploy": {
+      "command": "aws cloudformation deploy --template-file sam-out.yml --stack-name ${PROJECT}-${SERVICE}-${ENVIRONMENT} --parameter-overrides ProjectNameParameter=${PROJECT} ServiceNameParameter=${SERVICE} EnvironmentParameter=${ENVIRONMENT}"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.62.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "better-npm-run": "0.0.15",
+    "eslint": "^3.19.0",
+    "eslint-plugin-promise": "^3.5.0"
+  }
+}
