@@ -129,3 +129,16 @@ Resources:
               Configuration:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
               RunOrder: '1'
+        - Name: PreRelease2
+          Actions:
+            - Name: PreRelease2
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: '1'
+              InputArtifacts:
+                - Name: ServiceDeploy
+              Configuration:
+                FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
+              RunOrder: '1'
