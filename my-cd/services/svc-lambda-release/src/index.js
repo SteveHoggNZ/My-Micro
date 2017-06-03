@@ -6,7 +6,7 @@ const log = require('./logging.js')
 exports.pre_release = (event, context, callback) => {
   const info = JSON.parse(event.body)
 
-  console.log('got info', info)
+  console.log('got info', JSON.stringify(info))
 
   const response = {
     statusCode: 200,
