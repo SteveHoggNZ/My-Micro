@@ -91,6 +91,7 @@ Resources:
                 - Name: ServiceDeploy
               Configuration:
                 ActionMode: "CHANGE_SET_REPLACE"
+                # TO DO: add version number to change set name?
                 ChangeSetName: "SAM-deploy"
                 RoleArn:
                   Fn::ImportValue:
