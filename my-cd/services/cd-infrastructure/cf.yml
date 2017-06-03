@@ -315,10 +315,6 @@ Resources:
                   - iam:PassRole
                 Resource:
                   - !Sub "arn:aws:iam::${AWS::AccountId}:role/${ProjectNameParameter}-${EnvironmentParameter}-CodeBuildRole*"
-              -
-                Effect: Allow
-                Action: "*"
-                Resource: "*"
         # TO DO remove Serverless permissions as SAM is used?
         -
           PolicyName: ServerlessDeployPermissions

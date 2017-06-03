@@ -128,4 +128,5 @@ Resources:
                 - Name: ServiceDeploy
               Configuration:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
+                UserParameters: !Ref "AWS::StackName"
               RunOrder: '1'
