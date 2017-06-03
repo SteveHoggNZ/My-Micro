@@ -93,7 +93,7 @@ Resources:
                 RoleArn:
                   Fn::ImportValue:
                     !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-CodeBuildRoleArn"
-                # Capabilities: "CAPABILITY_IAM"
+                Capabilities: "CAPABILITY_IAM"
                 StackName: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
                 ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
                 TemplatePath: "ServiceBuild::sam-out.yml"
