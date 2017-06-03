@@ -7,6 +7,13 @@ my-micro contains my experiment with AWS Lambda, Micro Services and Continuous D
 * Pass role by reference: Role: 'arn:aws:iam::798269391015:role/lambda_basic_execution'
 * Figure out how SAM works with API Gateway stages e.g. prod etc
 * Fix cli bug with nested stack uri: https://github.com/aws/aws-cli/pull/2360
+* Initial delivery setup
+  * Deploy from local
+  * Requirements - Reduce these further?
+    * lambda has stackname prefix
+    * buildspec.yml - file exists
+    * package.json - project defined
+    * sam.yml - TemplateURL set to ./ for pipeline
 
 # Setup
 
@@ -97,3 +104,28 @@ You can get values from JSON files stored in a CodePipeline artifact using Fn::G
 Creating a pipeline in the console then describing it is the easiest option to see what needs to be defined in the CloudFormation YAML template i.e.
 
 `aws codepipeline get-pipeline --name <name>`
+
+
+## CloudFormation Deploy Permissions
+
+When running a pipeline that tries to do a SAM CloudFormation deploy via CodeBuild e.g. ...
+
+```
+aws cloudformation deploy --template-file sam-out.yml --stack-name ${PROJECT}-${SERVICE}-${ENVIRONMENT} --parameter-overrides ProjectNameParameter=${PROJECT} ServiceNameParameter=${SERVICE} EnvironmentParameter=${ENVIRONMENT}
+```
+
+... the deploy stage failed with:
+
+```
+15:41:16
+Waiting for changeset to be created..
+15:41:16
+15:41:16
+'Status'
+```
+
+i.e. no useful error message. This is due to insufficient permissions for the role I assigned to CodeBuild (confirmed by allowing the role to do everything):
+
+https://github.com/awslabs/serverless-application-model/issues/58
+
+For that reason, I started using a CloudFormation deploy step using sam-out.yml (see the SAM pipelines in common/pipeliness)

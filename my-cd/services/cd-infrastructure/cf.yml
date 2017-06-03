@@ -9,6 +9,14 @@ Parameters:
     MinLength: 4
     MaxLength: 20
     Description: The name for the project
+  EnvironmentParameter:
+    Type: String
+    Default: test
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Description: Enter dev, test or prod. Default is test
   SvcUrlParameter:
     Type: String
     Description: The source version control URL (GitHub)
@@ -36,6 +44,9 @@ Resources:
           -
             Name: S3_BUCKET
             Value: !Ref S3Src
+          -
+            Name: ENVIRONMENT
+            Value: !Ref EnvironmentParameter
       Source:
         Type: "GITHUB"
         Location: !Ref "SvcUrlParameter"
@@ -44,6 +55,62 @@ Resources:
         Type: "S3"
         Location: !Ref S3Src
         Name: "source"
+      TimeoutInMinutes: 5
+  # ==== CodeBuild that packages source code
+  CodeBuildBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${AWS::StackName}-build"
+      ServiceRole: !Ref CodeBuildRole
+      Environment:
+        ComputeType: "BUILD_GENERAL1_SMALL"
+        Image: "aws/codebuild/nodejs:7.0.0"
+        Type: "LINUX_CONTAINER"
+        EnvironmentVariables:
+          -
+            Name: BUILD_ACTION
+            Value: build
+          -
+            Name: S3_BUCKET
+            Value: !Ref S3Src
+          -
+            Name: ENVIRONMENT
+            Value: !Ref EnvironmentParameter
+      Source:
+        Type: "GITHUB"
+        Location: !Ref "SvcUrlParameter"
+      Artifacts:
+        Type: "S3"
+        Location: !Ref S3Src
+        Name: "build"
+      TimeoutInMinutes: 5
+  # ==== CodeBuild that deploys source code
+  CodeBuildDeploy:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${AWS::StackName}-deploy"
+      ServiceRole: !Ref CodeBuildRole
+      Environment:
+        ComputeType: "BUILD_GENERAL1_SMALL"
+        Image: "aws/codebuild/nodejs:7.0.0"
+        Type: "LINUX_CONTAINER"
+        EnvironmentVariables:
+          -
+            Name: BUILD_ACTION
+            Value: deploy
+          -
+            Name: S3_BUCKET
+            Value: !Ref S3Src
+          -
+            Name: ENVIRONMENT
+            Value: !Ref EnvironmentParameter
+      Source:
+        Type: "GITHUB"
+        Location: !Ref "SvcUrlParameter"
+      Artifacts:
+        Type: "S3"
+        Location: !Ref S3Src
+        Name: "deploy"
       TimeoutInMinutes: 5
   # ==== CodePipeline Role for use by each services' CodePipeline
   CodePipelineRole:
@@ -176,15 +243,18 @@ Resources:
                 - codebuild.amazonaws.com
             Action:
               - sts:AssumeRole
+          -
+            # TO DO: give CloudFormation its own role
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+            Action:
+              - sts:AssumeRole
           - # Allow users in the same account to assume the role for debugging
             Effect: Allow
             Principal:
               AWS:
-                # - Fn::Join:
-                #   - ""
-                #   - - "arn:aws:iam::"
-                #     - Ref: "AWS::AccountId"
-                #     - ":root"
                 - !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action:
               - sts:AssumeRole
@@ -221,6 +291,36 @@ Resources:
                       - Ref: "AWS::AccountId"
                       - ":log-group:/aws/codebuild/*:*"
         -
+          PolicyName: SamDeployPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStackResources
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:CreateStack
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStackResource
+                  - cloudformation:UpdateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DeleteStack
+                Resource:
+                  # TO DO: make less liberal
+                  - "*"
+              -
+                Effect: Allow
+                Action:
+                  - iam:PassRole
+                Resource:
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/${ProjectNameParameter}-${EnvironmentParameter}-CodeBuildRole*"
+              -
+                Effect: Allow
+                Action: "*"
+                Resource: "*"
+        # TO DO remove Serverless permissions as SAM is used?
+        -
           PolicyName: ServerlessDeployPermissions
           PolicyDocument:
             Version: "2012-10-17"
@@ -236,11 +336,15 @@ Resources:
                   - cloudformation:DescribeStacks
                   - cloudformation:DeleteStack
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:cloudformation:*:*:stack/"
-                      - Ref: ProjectNameParameter
-                      - "-*"
+                  # TO DO: make less liberal
+                  - "*"
+                  # - !Sub "arn:aws:cloudformation:*:*:stack/*-${EnvironmentParameter}-*"
+                  # - !Sub "arn:aws:cloudformation:*:*:stack/*-${EnvironmentParameter}-*/*"
+                  # - Fn::Join:
+                  #   - ""
+                  #   - - "arn:aws:cloudformation:*:*:stack/"
+                  #     - Ref: ProjectNameParameter
+                  #     - "-*"
               -
                 Effect: Allow
                 Action:
@@ -266,11 +370,12 @@ Resources:
                   - s3:PutBucketWebsite
                   - s3:DeleteBucketWebsite
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:s3:::"
-                      - Ref: ProjectNameParameter
-                      - "-*-serverlessdeployment*"
+                  - !Sub "arn:aws:s3:::*-${EnvironmentParameter}-*-serverlessdeployment*"
+                  # - Fn::Join:
+                  #   - ""
+                  #   - - "arn:aws:s3:::"
+                  #     - Ref: ProjectNameParameter
+                  #     - "-*-serverlessdeployment*"
                   - Fn::Join:
                     - ""
                     - - "arn:aws:s3:::"
@@ -298,11 +403,12 @@ Resources:
                   - lambda:TagResource
                   - lambda:UntagResource
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:lambda:*:*:function:"
-                      - Ref: ProjectNameParameter
-                      - "-*"
+                  - !Sub "arn:aws:lambda:*:*:function:*-${EnvironmentParameter}-*"
+                  # - Fn::Join:
+                  #   - ""
+                  #   - - "arn:aws:lambda:*:*:function:"
+                  #     - Ref: ProjectNameParameter
+                  #     - "-*"
               -
                 Effect: Allow
                 Action:
@@ -338,13 +444,14 @@ Resources:
                   - logs:CreateLogStream
                   - logs:DeleteLogGroup
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:logs::"
-                      - Ref: "AWS::AccountId"
-                      - ":log-group:/aws/lambda/"
-                      - Ref: ProjectNameParameter
-                      - "-*:*"
+                  - !Sub "arn:aws:logs::${AWS::AccountId}:log-group:/aws/lambda/$*-${EnvironmentParameter}-*:*"
+                  # - Fn::Join:
+                  #   - ""
+                  #   - - "arn:aws:logs::"
+                  #     - Ref: "AWS::AccountId"
+                  #     - ":log-group:/aws/lambda/"
+                  #     - Ref: ProjectNameParameter
+                  #     - "-*:*"
               -
                 Effect: Allow
                 Action:
@@ -355,13 +462,14 @@ Resources:
                   - iam:DeleteRolePolicy
                   - iam:PutRolePolicy
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:iam::"
-                      - Ref: "AWS::AccountId"
-                      - ":role/"
-                      - Ref: ProjectNameParameter
-                      - "-*-lambdaRole"
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/*-${EnvironmentParameter}-*-lambdaRole"
+                  # - Fn::Join:
+                  #   - ""
+                  #   - - "arn:aws:iam::"
+                  #     - Ref: "AWS::AccountId"
+                  #     - ":role/"
+                  #     - Ref: ProjectNameParameter
+                  #     - "-*-lambdaRole"
         -
           PolicyName: ServerlessPipelinePermissions
           PolicyDocument:
@@ -372,16 +480,10 @@ Resources:
                 Action:
                   - codepipeline:UpdatePipeline
                 Resource:
-                  - Fn::Join:
-                    - ""
-                    - - "arn:aws:codepipeline:ap-southeast-2:"
-                      - Ref: "AWS::AccountId"
-                      - ":"
-                      - Ref: ProjectNameParameter
-                      - "*"
+                  - !Sub "arn:aws:codepipeline:ap-southeast-2:${AWS::AccountId}:*-${EnvironmentParameter}*"
                   # - Fn::Join:
                   #   - ""
-                  #   - - "arn:aws:codepipeline::"
+                  #   - - "arn:aws:codepipeline:ap-southeast-2:"
                   #     - Ref: "AWS::AccountId"
                   #     - ":"
                   #     - Ref: ProjectNameParameter
@@ -442,13 +544,19 @@ Resources:
 Outputs:
   CodePipelineRoleArn:
     Value: !GetAtt CodePipelineRole.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}-CodePipelineRoleArn
   CodeBuildRoleArn:
     Value: !GetAtt CodeBuildRole.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}-CodeBuildRoleArn
   CodeBuildExtractArn:
     Value: !GetAtt CodeBuildExtract.Arn
   S3Src:
     Description: A queue for storing source code to be built
     Value: !Ref S3Src
+    Export:
+      Name: !Sub ${AWS::StackName}-S3Src
   LambdaCodeBuildRoleArn:
     Value: !GetAtt LambdaCodeBuildRole.Arn
     Export:
