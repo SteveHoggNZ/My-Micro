@@ -4,7 +4,7 @@ const AWS = require('aws-sdk')
 const log = require('./logging.js')
 
 exports.pre_release = (event, context, callback) => {
-  const info = JSON.parse(event.body)
+  const info = JSON.parse(event)
 
   console.log('got info', JSON.stringify(info))
 
