@@ -128,4 +128,8 @@ i.e. no useful error message. This is due to insufficient permissions for the ro
 
 https://github.com/awslabs/serverless-application-model/issues/58
 
-For that reason, I started using a CloudFormation deploy step using sam-out.yml (see the SAM pipelines in common/pipeliness)
+For that reason, I started using a CloudFormation deploy step using sam-out.yml (see the SAM pipelines in common/pipelines)
+
+## Interesting Mock Example
+
+https://github.com/stelligent/cloudformation_templates/blob/master/labs/codepipeline/codepipeline-canonical.yml
