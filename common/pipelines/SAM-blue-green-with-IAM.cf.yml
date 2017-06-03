@@ -1,3 +1,5 @@
+# blue green deployment of Lambda functions
+# warning: includes CAPABILITY_IAM allowing IAM resources to be created/modified
 Parameters:
   CodeDeliveryNameParameter:
     Type: String
