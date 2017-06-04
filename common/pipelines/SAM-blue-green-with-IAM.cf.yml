@@ -131,14 +131,5 @@ Resources:
                 - Name: ServiceDeploy
               Configuration:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
-                # UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
-                # UserParameters:
-                #   Fn::Join:
-                #     - ""
-                #     - - '{'
-                #       - '\"Tag\", \"'
-                #       - { "Fn::GetParam" : [ "ServiceSource", "buildinfo.json", "Tag" ] }
-                #       - '\"'
-                #       - '}'
-                UserParameters: { "Fn::GetParam" : [ "ServiceSource", "buildinfo.json", "Tag" ] }
+                UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
               RunOrder: '1'
