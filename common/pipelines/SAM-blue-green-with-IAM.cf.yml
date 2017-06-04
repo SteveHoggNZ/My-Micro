@@ -135,9 +135,9 @@ Resources:
                 UserParameters:
                   Fn::Join:
                     - ""
-                      - - "{"
-                      - - "\"Tag\", \""
-                      - - { "Fn::GetParam" : [ "ServiceSource", "buildinfo.json", "Tag" ] }
-                      - - "\""
-                      - - "}"
+                    - - '{'
+                      - '\"Tag\", \"'
+                      - { "Fn::GetParam" : [ "ServiceSource", "buildinfo.json", "Tag" ] }
+                      - '\"'
+                      - '}'
               RunOrder: '1'
