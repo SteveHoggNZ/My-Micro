@@ -25,6 +25,13 @@ Parameters:
     MinLength: 4
     MaxLength: 20
     Description: The name for the service
+  VersionParameter:
+    Type: String
+    AllowedPattern: '^[0-9.]*$'
+    ConstraintDescription: 'Must be numbers and . only'
+    MinLength: 3
+    MaxLength: 20
+    Description: The version for the service
   EnvironmentParameter:
     Type: String
     Default: test
@@ -98,3 +105,6 @@ Resources:
         EnvironmentParameter: !Ref EnvironmentParameter
       TemplateURL: ./common/pipelines/SAM-blue-green-with-IAM.cf.yml
       TimeoutInMinutes: 2
+Outputs:
+  Version:
+    Value: !Ref VersionParameter
