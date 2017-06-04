@@ -105,7 +105,7 @@ Resources:
                     !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-CodeBuildRoleArn"
                 Capabilities: "CAPABILITY_IAM"
                 StackName: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
-                ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
+                ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"VersionParameter\": \"${VersionParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
                 TemplatePath: "ServiceBuild::sam-out.yml"
               RunOrder: '1'
             # - Name: Approve
