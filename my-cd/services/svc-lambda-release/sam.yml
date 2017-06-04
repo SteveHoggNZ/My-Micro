@@ -40,54 +40,58 @@ Resources:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
       Handler: src/api/handler.prerelease
       Runtime: nodejs6.10
-      Role: !GetAtt LambdaRole.Arn
+      # Role: !GetAtt LambdaRole.Arn
+      Role:
+        Fn::ImportValue:
+          # TO DO: create role for each project?
+          !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
       CodeUri: .
       Description: >-
         Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
       MemorySize: 128
       Timeout: 10
-  LambdaRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Policies:
-        - PolicyName: CodeBuildPermissions
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - "arn:aws:logs:*:*:*"
-            - Effect: "Allow"
-              Action:
-                - codepipeline:PutJobSuccessResult
-                - codepipeline:putJobFailureResult
-              Resource:
-                - "*"
-            # To Do, remove ListFunctions permission
-            - Effect: "Allow"
-              Action:
-                - lambda:ListFunctions
-              Resource:
-                - "*"
-            - Effect: Allow
-              Action:
-                - cloudformation:ListStackResources
-              Resource:
-                - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
+  # LambdaRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - lambda.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     Path: /
+  #     Policies:
+  #       - PolicyName: CodeBuildPermissions
+  #         PolicyDocument:
+  #           Version: "2012-10-17"
+  #           Statement:
+  #           - Effect: Allow
+  #             Action:
+  #               - logs:CreateLogGroup
+  #               - logs:CreateLogStream
+  #               - logs:PutLogEvents
+  #             Resource:
+  #               - "arn:aws:logs:*:*:*"
+  #           - Effect: "Allow"
+  #             Action:
+  #               - codepipeline:PutJobSuccessResult
+  #               - codepipeline:putJobFailureResult
+  #             Resource:
+  #               - "*"
+  #           # To Do, remove ListFunctions permission
+  #           - Effect: "Allow"
+  #             Action:
+  #               - lambda:ListFunctions
+  #             Resource:
+  #               - "*"
+  #           - Effect: Allow
+  #             Action:
+  #               - cloudformation:ListStackResources
+  #             Resource:
+  #               - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
   Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -96,5 +100,5 @@ Resources:
         ProjectNameParameter: !Ref ProjectNameParameter
         ServiceNameParameter: !Ref ServiceNameParameter
         EnvironmentParameter: !Ref EnvironmentParameter
-      TemplateURL: ./common/pipelines/SAM-blue-green-with-IAM.cf.yml
+      TemplateURL: ../../../common/pipelines/SAM-blue-green-with-IAM.cf.yml
       TimeoutInMinutes: 2
