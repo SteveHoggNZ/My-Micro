@@ -117,4 +117,4 @@ Resources:
         ServiceNameParameter: !Ref ServiceNameParameter
         EnvironmentParameter: !Ref EnvironmentParameter
       TemplateURL: ./common/pipelines/SAM-basic.cf.yml
-      TimeoutInMinutes: 2
+      TimeoutInMinutes: 5
