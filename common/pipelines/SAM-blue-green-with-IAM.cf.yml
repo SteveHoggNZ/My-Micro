@@ -98,14 +98,7 @@ Resources:
                     !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-CodeBuildRoleArn"
                 Capabilities: "CAPABILITY_IAM"
                 StackName: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
-                # ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
-                ParameterOverrides:
-                  {
-                    "ProjectNameParameter": !Ref ProjectNameParameter,
-                    "ServiceNameParameter": !Ref ServiceNameParameter,
-                    "EnvironmentParameter": !Ref EnvironmentParameter,
-                    "Hello": "true"
-                  }
+                ParameterOverrides: !Sub "{\"ProjectNameParameter\": \"${ProjectNameParameter}\", \"ServiceNameParameter\": \"${ServiceNameParameter}\", \"EnvironmentParameter\": \"${EnvironmentParameter}\"}"
                 TemplatePath: "ServiceBuild::sam-out.yml"
               RunOrder: '1'
             # - Name: Approve
@@ -138,5 +131,15 @@ Resources:
                 - Name: ServiceDeploy
               Configuration:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
+                # UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
                 UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
+                  Fn::Join:
+                    - ""
+                    - - "{"
+
+                    - - "\"Tag\", \""
+                    - - { "Fn::GetParam" : [ "ServiceSource", "buildinfo.json", "Tag" ] }
+                    - - "\""
+
+                    - - "}"
               RunOrder: '1'
