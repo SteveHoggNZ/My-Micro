@@ -42,7 +42,7 @@ Resources:
       Runtime: nodejs6.10
       CodeUri: .
       Description: >-
-        Prerelease a Lambda function
+        Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
@@ -96,5 +96,5 @@ Resources:
         ProjectNameParameter: !Ref ProjectNameParameter
         ServiceNameParameter: !Ref ServiceNameParameter
         EnvironmentParameter: !Ref EnvironmentParameter
-      TemplateURL: ./common/pipelines/SAM-basic-with-IAM.cf.yml
+      TemplateURL: ./common/pipelines/SAM-blue-green-with-IAM.cf.yml
       TimeoutInMinutes: 2
