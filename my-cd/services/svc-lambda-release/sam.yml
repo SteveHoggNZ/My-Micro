@@ -35,22 +35,37 @@ Parameters:
     Description: Enter dev, test or prod. Default is test
 Resources:
   PreRelease:
-    Type: AWS::Serverless::Function
+    Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
-      # Handler: src/api/handler.prerelease
       Handler: bieberdex.prerelease
       Runtime: nodejs6.10
-      # Role: !GetAtt LambdaRole.Arn
+      CodeUri: .
+      Description: >-
+        WTF Function
+      MemorySize: 128
+      Timeout: 5
       Role:
         Fn::ImportValue:
           # TO DO: create role for each project?
           !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
-      CodeUri: .
-      Description: >-
-        Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
-      MemorySize: 128
-      Timeout: 10
+  # PreRelease:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: !Sub '${AWS::StackName}-PreRelease'
+  #     # Handler: src/api/handler.prerelease
+  #     Handler: bieberdex.prerelease
+  #     Runtime: nodejs6.10
+  #     # Role: !GetAtt LambdaRole.Arn
+  #     Role:
+  #       Fn::ImportValue:
+  #         # TO DO: create role for each project?
+  #         !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
+  #     CodeUri: .
+  #     Description: >-
+  #       Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
+  #     MemorySize: 128
+  #     Timeout: 10
   # LambdaRole:
   #   Type: AWS::IAM::Role
   #   Properties:
