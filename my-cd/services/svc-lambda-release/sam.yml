@@ -38,7 +38,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
-      Handler: index.hello
+      Handler: src/api/handler.prerelease
       Runtime: nodejs6.10
       CodeUri: .
       Description: >-
