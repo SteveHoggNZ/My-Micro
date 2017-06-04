@@ -42,7 +42,7 @@ Resources:
       Runtime: nodejs6.10
       CodeUri: .
       Description: >-
-        Hello World Function
+        Prerelease a Lambda function
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
