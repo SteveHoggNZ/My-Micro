@@ -47,12 +47,20 @@ fi
 SVC_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
 cp .eslintrc "${SVC_DIR}"
 cp -R common "${SVC_DIR}"
+echo "{
+  \"Tag\": \"${BUILD_TAG}\",
+  \"Project\": \"${PROJECT}\",
+  \"Service\": \"${SERVICE}\"}\",
+  \"Version\": \"${VERSION}\"}\",
+  \"Environment\": \"${ENVIRONMENT}\"}\"}" > "${SVC_DIR}/buildinfo.json"
 
 cd "${SVC_DIR}"
 
 CHECK_SERVICE=$(node -p "require('./package.json').name")
 CHECK_VERSION=$(node -p "require('./package.json').version")
 
+# To Do: check function version
+#
 # if [[ "${SERVICE}" != "${CHECK_SERVICE}" ]]; then
 #   echo "Package service ${CHECK_SERVICE} does not match tag service ${SERVICE}"
 #   exit 2
