@@ -1,6 +1,6 @@
 'use strict';
 
-exports.prerelease = (event, context, callback) => {
+exports.hello = (event, context, callback) => {
   const msg = 'Hi There World!'
 
   console.log(msg)

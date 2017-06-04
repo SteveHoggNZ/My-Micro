@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: >-
-  Web Hook for Source Version Control tag pushes
+  Hello World Service
 Parameters:
   CodeDeliveryNameParameter:
     Type: String
@@ -38,76 +38,17 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-PreRelease'
-      Handler: bieberdex.prerelease
+      Handler: index.hello
       Runtime: nodejs6.10
       CodeUri: .
       Description: >-
-        WTF Function
+        Hello World Function
       MemorySize: 128
       Timeout: 5
       Role:
         Fn::ImportValue:
           # TO DO: create role for each project?
           !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
-  # PreRelease:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: !Sub '${AWS::StackName}-PreRelease'
-  #     # Handler: src/api/handler.prerelease
-  #     Handler: bieberdex.prerelease
-  #     Runtime: nodejs6.10
-  #     # Role: !GetAtt LambdaRole.Arn
-  #     Role:
-  #       Fn::ImportValue:
-  #         # TO DO: create role for each project?
-  #         !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
-  #     CodeUri: .
-  #     Description: >-
-  #       Pre-release a Lambda function by creating a new versioning and shifting the green alias to it
-  #     MemorySize: 128
-  #     Timeout: 10
-  # LambdaRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - lambda.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     Path: /
-  #     Policies:
-  #       - PolicyName: CodeBuildPermissions
-  #         PolicyDocument:
-  #           Version: "2012-10-17"
-  #           Statement:
-  #           - Effect: Allow
-  #             Action:
-  #               - logs:CreateLogGroup
-  #               - logs:CreateLogStream
-  #               - logs:PutLogEvents
-  #             Resource:
-  #               - "arn:aws:logs:*:*:*"
-  #           - Effect: "Allow"
-  #             Action:
-  #               - codepipeline:PutJobSuccessResult
-  #               - codepipeline:putJobFailureResult
-  #             Resource:
-  #               - "*"
-  #           # To Do, remove ListFunctions permission
-  #           - Effect: "Allow"
-  #             Action:
-  #               - lambda:ListFunctions
-  #             Resource:
-  #               - "*"
-  #           - Effect: Allow
-  #             Action:
-  #               - cloudformation:ListStackResources
-  #             Resource:
-  #               - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
   Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -117,4 +58,4 @@ Resources:
         ServiceNameParameter: !Ref ServiceNameParameter
         EnvironmentParameter: !Ref EnvironmentParameter
       TemplateURL: ./common/pipelines/SAM-basic.cf.yml
-      TimeoutInMinutes: 5
+      TimeoutInMinutes: 2
