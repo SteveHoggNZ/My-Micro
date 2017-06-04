@@ -24,7 +24,7 @@
       "command": "node_modules/mocha/bin/mocha \"./src/**/*.test.js\""
     },
     "build": {
-      "command": "ls -al && aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
+      "command": "env && ls -al && aws cloudformation package --template-file sam.yml --output-template-file sam-out.yml --s3-bucket ${S3_BUCKET} --s3-prefix package/${PROJECT}/${SERVICE}/${VERSION}/${ENVIRONMENT}"
     },
     "deploy": {
       "command": "aws cloudformation deploy --template-file sam-out.yml --stack-name ${PROJECT}-${SERVICE}-${ENVIRONMENT} --parameter-overrides ProjectNameParameter=${PROJECT} ServiceNameParameter=${SERVICE} EnvironmentParameter=${ENVIRONMENT} --capabilities CAPABILITY_IAM"
