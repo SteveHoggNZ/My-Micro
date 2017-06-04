@@ -23,6 +23,13 @@ Parameters:
     MinLength: 4
     MaxLength: 20
     Description: The name for the service
+  VersionParameter:
+    Type: String
+    AllowedPattern: '^[0-9.]*$'
+    ConstraintDescription: 'Must be numbers and . only'
+    MinLength: 3
+    MaxLength: 20
+    Description: The version for the service
   EnvironmentParameter:
     Type: String
     Default: test
@@ -131,5 +138,5 @@ Resources:
                 - Name: ServiceDeploy
               Configuration:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
-                UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
+                UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Version\": \"${VersionParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
               RunOrder: '1'
