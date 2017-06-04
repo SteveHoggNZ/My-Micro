@@ -45,10 +45,49 @@ Resources:
         Hello World Function
       MemorySize: 128
       Timeout: 5
-      Role:
-        Fn::ImportValue:
-          # TO DO: create role for each project?
-          !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
+      Role: !GetAtt LambdaRole.Arn
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - "arn:aws:logs:*:*:*"
+            - Effect: "Allow"
+              Action:
+                - codepipeline:PutJobSuccessResult
+                - codepipeline:putJobFailureResult
+              Resource:
+                - "*"
+            # To Do, remove ListFunctions permission
+            - Effect: "Allow"
+              Action:
+                - lambda:ListFunctions
+              Resource:
+                - "*"
+            - Effect: Allow
+              Action:
+                - cloudformation:ListStackResources
+              Resource:
+                - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*"
   Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
