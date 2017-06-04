@@ -45,14 +45,17 @@ if [[ $ENVIRONMENT != 'dev' ]] && [[ $ENVIRONMENT != 'prod' ]]; then
 fi
 
 SVC_DIR="${PROJECT}/${SERVICES_DIR}/${SERVICE}"
-cp .eslintrc "${SVC_DIR}"
-cp -R common "${SVC_DIR}"
+
 echo "{
   \"Tag\": \"${BUILD_TAG}\",
   \"Project\": \"${PROJECT}\",
   \"Service\": \"${SERVICE}\"}\",
   \"Version\": \"${VERSION}\"}\",
-  \"Environment\": \"${ENVIRONMENT}\"}\"}" > "${SVC_DIR}/buildinfo.json"
+  \"Environment\": \"${ENVIRONMENT}\"}\"
+}" > "${SVC_DIR}/buildinfo.json"
+
+cp .eslintrc "${SVC_DIR}"
+cp -R common "${SVC_DIR}"
 
 cd "${SVC_DIR}"
 
