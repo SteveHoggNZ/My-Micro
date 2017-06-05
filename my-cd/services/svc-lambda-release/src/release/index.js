@@ -76,7 +76,8 @@ module.exports.publishVersion = ({ FunctionName }) => {
 module.exports.makePrerelease = ({
   putJobSuccess = module.exports.putJobSuccess,
   putJobFailure = module.exports.putJobFailure,
-  listStackResources = module.exports.listStackResources
+  listStackResources = module.exports.listStackResources,
+  publishVersion = module.exports.publishVersion
 } = {}) => ({ jobId, invokeid }) => {
     return listStackResources()
       .then((data) => {
