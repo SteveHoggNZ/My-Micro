@@ -123,7 +123,7 @@ Resources:
                 Version: '1'
               Configuration:
                 ActionMode: "CHANGE_SET_EXECUTE"
-                ChangeSetName: "SAM-deploy"
+                ChangeSetName: !Sub "SAM-deploy-${VersionParameter}"
                 StackName: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
               RunOrder: '3'
         - Name: PreRelease
