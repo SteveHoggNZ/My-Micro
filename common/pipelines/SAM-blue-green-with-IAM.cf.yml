@@ -99,7 +99,7 @@ Resources:
               Configuration:
                 ActionMode: "CHANGE_SET_REPLACE"
                 # TO DO: add version number to change set name?
-                ChangeSetName: "SAM-deploy"
+                ChangeSetName: !Sub "SAM-deploy-${VersionParameter}"
                 RoleArn:
                   Fn::ImportValue:
                     !Sub "${CodeDeliveryNameParameter}-${EnvironmentParameter}-CodeBuildRoleArn"
