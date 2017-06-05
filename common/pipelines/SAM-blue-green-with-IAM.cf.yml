@@ -126,7 +126,7 @@ Resources:
                 ChangeSetName: "SAM-deploy"
                 StackName: !Sub "${ProjectNameParameter}-${ServiceNameParameter}-${EnvironmentParameter}"
               RunOrder: '3'
-        - Name: PreRelease
+        - Name: Release
           Actions:
             - Name: PreRelease
               ActionTypeId:
@@ -140,3 +140,22 @@ Resources:
                 FunctionName: "my-cd-svc-lambda-release-dev-PreRelease"
                 UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Version\": \"${VersionParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
               RunOrder: '1'
+            - Name: ReleaseApprove
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: '1'
+              RunOrder: '2'
+            - Name: Release
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: '1'
+              InputArtifacts:
+                - Name: ServiceDeploy
+              Configuration:
+                FunctionName: "my-cd-svc-lambda-release-dev-Release"
+                UserParameters: !Sub "{\"StackName\": \"${AWS::StackName}\", \"Project\": \"${ProjectNameParameter}\", \"Service\": \"${ServiceNameParameter}\", \"Version\": \"${VersionParameter}\", \"Environment\": \"${EnvironmentParameter}\"}"
+              RunOrder: '3'
