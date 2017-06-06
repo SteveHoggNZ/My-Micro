@@ -28,6 +28,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "better-npm-run": "0.0.15"
+  },
   "dependencies": {
     "aws-sdk": "^2.58.0"
   }
