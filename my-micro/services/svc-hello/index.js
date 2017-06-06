@@ -8,7 +8,7 @@ exports.hello_nz = (event, context, callback) => {
 }
 
 exports.hello_world = (event, context, callback) => {
-  const msg = 'HelloWorld World! 1'
+  const msg = 'HelloWorld World! 4'
 
   console.log(msg)
   callback(null, msg)
