@@ -156,11 +156,10 @@ module.exports.makePrerelease = ({
       .then((publishData) => {
         const version = publishData.Version
 
-        result = {
-          // ...result,
+        result = Object.assign(result, {
           version,
           versionId
-        }
+        })
 
         log.info(`Published ${versionId} as version ${version}`)
 
