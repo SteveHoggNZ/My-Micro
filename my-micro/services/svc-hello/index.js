@@ -1,7 +1,7 @@
 'use strict'
 
 exports.hello_nz = (event, context, callback) => {
-  const msg = 'HelloWorld NZ! 3'
+  const msg = 'HelloWorld NZ! 6'
 
   console.log(msg)
   callback(null, msg)
