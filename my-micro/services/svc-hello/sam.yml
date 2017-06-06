@@ -111,5 +111,5 @@ Resources:
         ServiceNameParameter: !Ref ServiceNameParameter
         VersionParameter: !Ref VersionParameter
         EnvironmentParameter: !Ref EnvironmentParameter
-      TemplateURL: ../../../common/pipelines/SAM-blue-green-with-IAM.cf.yml
+      TemplateURL: ./common/pipelines/SAM-blue-green-with-IAM.cf.yml
       TimeoutInMinutes: 2

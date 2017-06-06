@@ -1,6 +1,6 @@
 {
   "project": "my-micro",
-  "name": "srv-hello",
+  "name": "svc-hello",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
