@@ -25,6 +25,13 @@ Parameters:
     MinLength: 4
     MaxLength: 20
     Description: The name for the service
+  VersionParameter:
+    Type: String
+    AllowedPattern: '^[0-9.]*$'
+    ConstraintDescription: 'Must be numbers and . only'
+    MinLength: 3
+    MaxLength: 20
+    Description: The version for the service
   EnvironmentParameter:
     Type: String
     Default: test
@@ -34,21 +41,67 @@ Parameters:
       - prod
     Description: Enter dev, test or prod. Default is test
 Resources:
+  HelloNZ:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-HelloNZ'
+      Handler: index.hello_nz
+      Runtime: nodejs6.10
+      CodeUri: .
+      Description: >-
+        Hello NZ Function
+      MemorySize: 128
+      Timeout: 5
+      Role: !GetAtt LambdaRole.Arn
   HelloWorld:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub '${AWS::StackName}-HelloWorld'
-      Handler: index.hello
+      Handler: index.hello_world
       Runtime: nodejs6.10
       CodeUri: .
       Description: >-
         Hello World Function
       MemorySize: 128
       Timeout: 5
-      Role:
-        Fn::ImportValue:
-          # TO DO: create role for each project?
-          !Sub '${CodeDeliveryNameParameter}-${EnvironmentParameter}-LambdaCodeBuildRoleArn'
+      Role: !GetAtt LambdaRole.Arn
+  HelloUniverse:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-HelloUniverse'
+      Handler: index.hello_Universe
+      Runtime: nodejs6.10
+      CodeUri: .
+      Description: >-
+        Hello World Function
+      MemorySize: 128
+      Timeout: 5
+      Role: !GetAtt LambdaRole.Arn
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - "arn:aws:logs:*:*:*"
   Pipeline:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -56,6 +109,7 @@ Resources:
         CodeDeliveryNameParameter: !Ref CodeDeliveryNameParameter
         ProjectNameParameter: !Ref ProjectNameParameter
         ServiceNameParameter: !Ref ServiceNameParameter
+        VersionParameter: !Ref VersionParameter
         EnvironmentParameter: !Ref EnvironmentParameter
-      TemplateURL: ./common/pipelines/SAM-basic.cf.yml
+      TemplateURL: ../../../common/pipelines/SAM-blue-green-with-IAM.cf.yml
       TimeoutInMinutes: 2
