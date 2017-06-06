@@ -13,9 +13,9 @@ module.exports.prerelease = (event, context, callback) => {
 
   const invokeid = context.invokeid
 
-  const prerelease = release.makePrerelease()
+  const pr = release.makePrerelease()
 
-  prerelease({ jobId, invokeid, versionId: UserParameters['Version'] })
+  pr({ jobId, invokeid, versionId: UserParameters['Version'] })
     .then((data) => {
       const response = {
         statusCode: 200,
@@ -40,9 +40,9 @@ module.exports.release = (event, context, callback) => {
 
   const invokeid = context.invokeid
 
-  const release = release.makeRelease()
+  const r = release.makeRelease()
 
-  release({ jobId, invokeid, versionId: UserParameters['Version'] })
+  r({ jobId, invokeid, versionId: UserParameters['Version'] })
     .then((data) => {
       const response = {
         statusCode: 200,

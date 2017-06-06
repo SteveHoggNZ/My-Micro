@@ -46,10 +46,9 @@ module.exports.putJobFailure = ({ jobId, invokeid }) => {
   })
 }
 
-module.exports.listStackResources = () => {
-  // TO DO: get the correct stack
+module.exports.listStackResources = ({ StackName }) => {
   const params = {
-    StackName: 'my-cd-svc-lambda-release-dev'
+    StackName
   }
 
   return new Promise(function(resolve, reject) {
@@ -141,38 +140,38 @@ module.exports.makePrerelease = ({
   updateAlias = exports.updateAlias
 } = {}) => ({ jobId, invokeid, versionId }) => {
     // To Do: set functionName below instead of hard-coding it
-    let result
-    let functionName = 'my-cd-svc-lambda-release-dev-PreRelease'
+    let result = {}
 
-    return listStackResources()
+    // To Do: generate stack name
+    return listStackResources({ StackName: 'my-micro-svc-hello-dev' })
       .then((data) => {
-        log.info('listStackResources', data)
+        // publish a version for each function in the list of resources
+        const publishCalls = data.StackResourceSummaries
+          .filter((e) => e && e.ResourceType
+            && e.ResourceType === 'AWS::Lambda::Function')
+          .map((e) => publishVersion({ FunctionName: e.PhysicalResourceId }))
 
-        // To Do: set functionName here
-        // data.StackResourceSummaries.filter()
+        log.info('publishCalls:', publishCalls)
 
-        return publishVersion({ FunctionName: functionName })
+        return Promise.all(publishCalls)
       })
       .then((publishData) => {
-        const version = publishData.Version
+        log.info('publishData', publishData)
 
-        result = Object.assign(result, {
-          version,
-          versionId
-        })
+        // map published functions to a promise chain that tries an update, then a create if that fails
+        const aliasCalls = publishData
+          .map((p) =>
+            updateAlias({ FunctionName: p.FunctionName, FunctionVersion: p.Version, Name: 'green' })
+              .catch((updateError) =>
+                createAlias({ FunctionName: p.FunctionName, FunctionVersion: p.Version, Name: 'green' })
+              ))
 
-        log.info(`Published ${versionId} as version ${version}`)
-
-        return updateAlias({ FunctionName: functionName, FunctionVersion: version, Name: 'green' })
-          .catch((updateError) => {
-            log.info('updateAlias error caught', updateError)
-            return createAlias({ FunctionName: functionName, FunctionVersion: version, Name: 'green' })
-          })
+        return Promise.all(aliasCalls)
       })
       .then((aliasData) => {
         log.info('createAlias', aliasData)
 
-        return putJobFailure({ jobId, invokeid })
+        return putJobSuccess({ jobId, invokeid })
           .then(() => result)
       })
       .catch((error) => {
@@ -193,7 +192,8 @@ module.exports.makePrerelease = ({
       // To Do: set functionName below instead of hard-coding it
       let functionName = 'my-cd-svc-lambda-release-dev-PreRelease'
 
-      return listStackResources()
+      // To Do: generate stack name
+      return listStackResources({ StackName: 'my-micro-svc-hello-dev' })
         .then((data) => {
           log.info('listStackResources', data)
 

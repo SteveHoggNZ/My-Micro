@@ -105,6 +105,7 @@ Resources:
             - Effect: "Allow"
               Action:
                 - lambda:PublishVersion
+                - lambda:ListAliases
                 - lambda:CreateAlias
                 - lambda:DeleteAlias
                 - lambda:UpdateAlias
