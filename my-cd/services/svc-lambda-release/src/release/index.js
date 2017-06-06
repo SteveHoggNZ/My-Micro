@@ -157,7 +157,7 @@ module.exports.makePrerelease = ({
         const version = publishData.Version
 
         result = {
-          ...result,
+          // ...result,
           version,
           versionId
         }
