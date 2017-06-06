@@ -15,7 +15,7 @@ exports.hello_world = (event, context, callback) => {
 }
 
 exports.hello_universe = (event, context, callback) => {
-  const msg = 'HelloWorld Universe! 2'
+  const msg = 'HelloWorld Universe! 5'
 
   console.log(msg)
   callback(null, msg)
