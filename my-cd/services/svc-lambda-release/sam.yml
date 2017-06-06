@@ -53,6 +53,18 @@ Resources:
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
+  Release:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-Release'
+      Handler: src/api/handler.release
+      Runtime: nodejs6.10
+      CodeUri: .
+      Description: >-
+        Release a Lambda function by pointing the blue alias to the green alias
+      MemorySize: 128
+      Timeout: 5
+      Role: !GetAtt LambdaRole.Arn
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -90,6 +102,14 @@ Resources:
                 - lambda:ListFunctions
               Resource:
                 - "*"
+            - Effect: "Allow"
+              Action:
+                - lambda:PublishVersion
+                - lambda:CreateAlias
+                - lambda:DeleteAlias
+                - lambda:UpdateAlias
+              Resource:
+                - !Sub "arn:aws:lambda:ap-southeast-2:798269391015:function:*-${EnvironmentParameter}-*"
             - Effect: Allow
               Action:
                 - cloudformation:ListStackResources
