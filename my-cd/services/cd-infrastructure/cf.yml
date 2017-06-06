@@ -42,10 +42,10 @@ Resources:
             Name: BUILD_ACTION
             Value: extract
           -
-            Name: S3_BUCKET
+            Name: SVC_BUCKET
             Value: !Ref S3Src
           -
-            Name: ENVIRONMENT
+            Name: SVC_ENVIRONMENT
             Value: !Ref EnvironmentParameter
       Source:
         Type: "GITHUB"
@@ -71,10 +71,10 @@ Resources:
             Name: BUILD_ACTION
             Value: build
           -
-            Name: S3_BUCKET
+            Name: SVC_BUCKET
             Value: !Ref S3Src
           -
-            Name: ENVIRONMENT
+            Name: SVC_ENVIRONMENT
             Value: !Ref EnvironmentParameter
       Source:
         Type: "GITHUB"
@@ -99,10 +99,10 @@ Resources:
             Name: BUILD_ACTION
             Value: deploy
           -
-            Name: S3_BUCKET
+            Name: SVC_BUCKET
             Value: !Ref S3Src
           -
-            Name: ENVIRONMENT
+            Name: SVC_ENVIRONMENT
             Value: !Ref EnvironmentParameter
       Source:
         Type: "GITHUB"
