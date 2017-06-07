@@ -34,7 +34,7 @@ if [[ -z $SVC_ENVIRONMENT ]]; then
 fi
 
 echo
-echo -n "The current package version is ${SVC_VERSION}, do you want to increment the patch level? [y/N]:"
+echo -n "The current package version is ${SVC_VERSION}, do you want to increment the patch level? [y/N]: "
 read patch
 echo
 
@@ -48,13 +48,49 @@ tag=${SVC_PROJECT}/${SVC_SERVICE}/${SVC_VERSION}/${SVC_ENVIRONMENT}
 echo "New tag: ${tag}"
 echo
 
-echo "The following files have not been committed yet:"
+statusLog="$(git status .)"
+
+if [[ "$(echo "${statusLog}" | egrep -c 'modified:|deleted:')" != "" ]]; then
+  echo "The following files under this directory have not been committed yet:"
+  echo "================================================"
+  echo "{$statusLog}"
+  echo "================================================"
+  echo
+
+  echo -n "Please confirm you would like to proceed without commiting the files above: [y/N]: "
+  read confirm
+  echo
+
+  if [[ $confirm != y ]] && [[ $confirm != Y ]]; then
+    echo
+    echo "Warning: Skipping release due to uncommited files"
+    echo
+    exit 0
+  fi
+fi
+
+commitLog="$(git log --grep \(${SVC_SERVICE}\) -n 5)"
+commit1="$(echo "$commitLog" | head -n 1 | sed 's/^commit //')"
+
+echo "The following recent commits have been made for ${SVC_SERVICE}"
 echo "================================================"
-git status .
+echo "{$commitLog}"
 echo "================================================"
 echo
+echo -n "Which commit would you like to use? [$commit1]: "
+read commit
+echo
 
-echo -n "Would you like to tag this release as ${tag} and push the tag to master? [y/N]:"
+if [[ $commit == "" ]]; then
+  commit="$commit1"
+fi
+
+if [[ $commit == "" ]]; then
+  echo "Error: no commit specified"
+  exit 2
+fi
+
+echo -n "Please confirm the release action: tag commit ${commit} with ${tag} and push the tag to master? [y/N]: "
 read push
 
 if [[ $push == y ]] || [[ $push == Y ]]; then
@@ -64,6 +100,7 @@ if [[ $push == y ]] || [[ $push == Y ]]; then
   echo
 else
   echo
-  echo "Skipping release"
+  echo "Warning: Skipping release"
   echo
+  exit 0
 fi
