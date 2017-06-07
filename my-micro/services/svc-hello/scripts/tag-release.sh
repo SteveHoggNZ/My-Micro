@@ -52,7 +52,7 @@ echo
 
 statusLog="$(git status .)"
 
-if [[ "$(echo "${statusLog}" | egrep -c 'modified:|deleted:')" != "" ]]; then
+if [[ "$(echo "${statusLog}" | egrep -c 'modified:|deleted:')" != "0" ]]; then
   echo "The following files under this directory have not been committed yet:"
   echo "================================================"
   echo "{$statusLog}"
