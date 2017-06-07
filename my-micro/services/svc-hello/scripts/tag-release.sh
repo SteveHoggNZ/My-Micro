@@ -98,7 +98,7 @@ read push
 if [[ $push == y ]] || [[ $push == Y ]]; then
   echo
   echo "Tagging release and pushing to master"
-  git tag $tag && git push origin $tag
+  git tag $tag $commit && git push origin $tag
   echo
 else
   echo
