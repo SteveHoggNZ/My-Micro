@@ -70,6 +70,12 @@ Resources:
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /hello/world
+            Method: get
   HelloUniverse:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -82,6 +88,12 @@ Resources:
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /hello/universe
+            Method: get
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
