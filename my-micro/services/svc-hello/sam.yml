@@ -47,8 +47,7 @@ Resources:
       Handler: index.hello_nz
       Runtime: nodejs6.10
       CodeUri: .
-      Description: >-
-        !Ref VersionParameter
+      Description: !Ref VersionParameter
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
@@ -65,8 +64,7 @@ Resources:
       Handler: index.hello_world
       Runtime: nodejs6.10
       CodeUri: .
-      Description: >-
-        !Ref VersionParameter
+      Description: !Ref VersionParameter
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
@@ -83,8 +81,7 @@ Resources:
       Handler: index.hello_Universe
       Runtime: nodejs6.10
       CodeUri: .
-      Description: >-
-        !Ref VersionParameter
+      Description: !Ref VersionParameter
       MemorySize: 128
       Timeout: 5
       Role: !GetAtt LambdaRole.Arn
