@@ -1,7 +1,7 @@
 {
   "project": "my-micro",
   "name": "svc-hello",
-  "version": "1.0.0",
+  "version": "1.0.10",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "lint:fix": "better-npm-run lint --fix",
     "build": "better-npm-run build",
     "deploy": "better-npm-run deploy",
-    "deploy:direct": "better-npm-run deploy:direct"
+    "deploy:direct": "better-npm-run deploy:direct",
+    "tag:release": "better-npm-run tag:release"
   },
   "betterScripts": {
     "lint": {
@@ -23,6 +24,9 @@
     },
     "deploy:direct": {
       "command": "bash scripts/deploy-direct.sh"
+    },
+    "tag:release": {
+      "command": "bash scripts/tag-release.sh"
     }
   },
   "keywords": [],

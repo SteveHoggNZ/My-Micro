@@ -34,7 +34,6 @@ Parameters:
     Description: The version for the service
   EnvironmentParameter:
     Type: String
-    Default: test
     AllowedValues:
       - dev
       - test

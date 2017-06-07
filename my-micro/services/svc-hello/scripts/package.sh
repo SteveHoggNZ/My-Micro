@@ -48,4 +48,4 @@ else
     --output-template-file sam-out.yml \
     --s3-bucket ${SVC_BUCKET} \
     --s3-prefix package/${SVC_PROJECT}/${SVC_SERVICE}/${SVC_VERSION}/${SVC_ENVIRONMENT}
-  fi
+fi
