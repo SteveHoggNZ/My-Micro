@@ -23,7 +23,6 @@ Parameters:
     Description: The name for the service
   EnvironmentParameter:
     Type: String
-    Default: test
     AllowedValues:
       - dev
       - test
