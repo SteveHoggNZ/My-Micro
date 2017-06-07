@@ -40,6 +40,8 @@ echo
 
 if [[ $patch == y ]] || [[ $patch == Y ]]; then
   npm version patch >/dev/null
+  git add package.json
+  git commit -m "release (${SVC_SERVICE}): increment version number"
   SVC_VERSION=$(node -p "require('./package.json').version")
 fi
 
