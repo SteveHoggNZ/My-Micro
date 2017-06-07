@@ -11,7 +11,6 @@ Parameters:
     Description: The name for the project
   EnvironmentParameter:
     Type: String
-    Default: test
     AllowedValues:
       - dev
       - test
@@ -458,7 +457,8 @@ Resources:
                   - iam:DeleteRolePolicy
                   - iam:PutRolePolicy
                 Resource:
-                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/*-${EnvironmentParameter}-*-lambdaRole"
+                  # - !Sub "arn:aws:iam::${AWS::AccountId}:role/*-${EnvironmentParameter}-*-LambdaRole"
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/*"
                   # - Fn::Join:
                   #   - ""
                   #   - - "arn:aws:iam::"
